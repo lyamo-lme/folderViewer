@@ -13,8 +13,8 @@ public class FolderController : Controller
     }
 
     [Route("folder")]
-    public async Task<ActionResult<List<Folder>>> GetFolder(int folderId)
+    public async Task<ActionResult<Folder>> GetFolder(int? folderId=null)
     {
-        return View("Index", new List<Folder>());
+        return View("Index", new Folder());
     }
 }
