@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Db.Repository;
+using WebApplication1.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ builder.Services.AddDbContext<DBContext>(
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IFolderRepository, FolderRepository>();
 
 var app = builder.Build();
 
@@ -29,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=root}/{action=main}/{id?}");
+    pattern: "{controller=Folder}/{action=GetFolder}/{id?}");
 
 app.Run();

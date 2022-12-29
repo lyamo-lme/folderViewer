@@ -12,14 +12,20 @@ public class FolderRepository : IFolderRepository
         DbContext = context;
     }
 
-    public async Task<Folder> GetFolderAsync(Func<Folder, bool> funct)
+    public async Task<Folder> GetFolderByIdAsync(int? id, bool pId = false)
     {
         try
         {
             await using (DbContext)
             {
-                var model = await DbContext.Folders.FirstAsync(x => funct(x));
-                model.Folders = await DbContext.Folders.Where(x => x.ParentId == model.Id).ToListAsync();
+                Folder model = new Folder();
+                if (pId)
+                    model = await DbContext.Folders.FirstOrDefaultAsync(x => x.ParentId == id);
+                else
+                    model = await DbContext.Folders.FirstOrDefaultAsync(x => x.Id == id);
+                
+                model.Folders = await DbContext.Folders.Where(x=>x.ParentId==model.Id).ToListAsync();
+                
                 return model;
             }
         }

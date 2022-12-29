@@ -1,20 +1,26 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Db.Repository;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers;
 
-[Route("root")]
 public class FolderController : Controller
 {
+    private IFolderRepository FolderRepository { get; set; }
 
-    public FolderController()
+    public FolderController(IFolderRepository folderRepository)
     {
+        FolderRepository = folderRepository;
     }
 
-    [Route("folder")]
-    public async Task<ActionResult<Folder>> GetFolder(int? folderId=null)
+    public async Task<ActionResult<Folder>> GetFolder(int? folderId = null)
     {
-        return View("Index", new Folder());
+        Folder folders = new Folder();
+        if (folderId == null)
+            folders = await FolderRepository.GetFolderByIdAsync(folderId, true);
+        else
+            folders = await FolderRepository.GetFolderByIdAsync(folderId);
+
+        return View("Index", folders);
     }
 }

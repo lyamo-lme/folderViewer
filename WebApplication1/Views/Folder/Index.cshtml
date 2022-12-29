@@ -4,6 +4,27 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+<h1>Current Folder - "@Model.Name"</h1>
 <table>
-    <h2>title</h2>
+    @if (@Model.ParentId != null)
+    {
+        <tr>
+            <td>
+                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="null">to root folder</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="@Model.ParentId">...</a>
+            </td>
+        </tr>
+    }
+    @foreach (var f in @Model.Folders)
+    {
+        <tr>
+            <td>
+                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="@f.Id">@f.Name</a>
+            </td>
+        </tr>
+    }
 </table>
