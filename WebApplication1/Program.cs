@@ -10,7 +10,7 @@ builder.Services.AddDbContext<DBContext>(
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IFolderRepository, FolderRepository>();
+builder.Services.AddScoped<IFolderRepository, FolderRepository>();
 
 var app = builder.Build();
 

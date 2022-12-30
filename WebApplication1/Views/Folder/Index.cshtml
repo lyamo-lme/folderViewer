@@ -10,20 +10,21 @@
     {
         <tr>
             <td>
-                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="null">to root folder</a>
+                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="null">to root folder</a>
             </td>
         </tr>
         <tr>
             <td>
-                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="@Model.ParentId">...</a>
+                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@Model.ParentId">...</a>
             </td>
         </tr>
     }
+    <hr>
     @foreach (var f in @Model.Folders)
     {
         <tr>
             <td>
-                <a asp-controller="Folder" asp-action="GetFolder" asp-route-folderId="@f.Id">@f.Name</a>
+                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@f.Id">@f.Name</a>
             </td>
         </tr>
     }
