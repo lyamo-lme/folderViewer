@@ -1,7 +1,12 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using WebApplication1.Db.Repository;
 using WebApplication1.Models;
+using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace WebApplication1.Controllers;
 
@@ -29,12 +34,11 @@ public class FolderController : Controller
         return folders;
     }
 
-    public async Task<ActionResult> ExportFolder(int? folderId = null)
+    public async Task<IActionResult> ExportFolder(int? folderId = null)
     {
         var folder = await FolderRepository.ExportFolder(folderId);
         string json = JsonSerializer.Serialize(folder);
-        return Ok(json);
+        return File(Encoding.UTF8.GetBytes(json), "text/json", folder.Name);
+        
     }
-
-   
 }
