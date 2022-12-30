@@ -32,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Folder}/{action=GetFolder}/{id?}");
+    pattern: "{controller=Folder}/{action=GetFolderView}/{id?}");
 
 app.Run();

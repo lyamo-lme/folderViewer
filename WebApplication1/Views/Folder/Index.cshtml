@@ -4,28 +4,38 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+<form asp-action="ImportFolder" method="post" enctype="multipart/form-data">
+    <input hidden="hidden" id="parentId" name="parentId" value="@Model.Id"/>
+    <input name="file" id="file" type="file"/>
+    <button type="submit">Upload File</button>
+</form>
 <h1>Current Folder - "@Model.Name"</h1>
-<table>
+<a asp-controller="Folder" asp-action="ExportFolder" asp-route-folderId="@Model.Id">get export file for this folder</a>
+<style>
+    .table{
+    display:flex ;
+    flex-direction: column
+    }
+    .table-elem{
+     display: flex;
+     justify-content: space-between;
+    }
+</style>
+<div class="table">
     @if (@Model.ParentId != null)
     {
-        <tr>
-            <td>
-                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="null">to root folder</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@Model.ParentId">...</a>
-            </td>
-        </tr>
+        <div>
+            <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="null">to root folder</a>
+        </div>
+        <div>
+            <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@Model.ParentId">back</a>
+        </div>
     }
-    <hr>
     @foreach (var f in @Model.Folders)
     {
-        <tr>
-            <td>
-                <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@f.Id">@f.Name</a>
-            </td>
-        </tr>
+        <div class="table-elem">
+            <a asp-controller="Folder" asp-action="GetFolderView" asp-route-folderId="@f.Id">@f.Name</a>
+            <a asp-controller="Folder" asp-action="ExportFolder" asp-route-folderId="@f.Id">get export file for this folder</a>
+        </div>
     }
-</table>
+</div>

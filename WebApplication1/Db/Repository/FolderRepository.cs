@@ -34,19 +34,29 @@ public class FolderRepository : IFolderRepository
 
     public async Task<Folder> AddFolderAsync(Folder folder)
     {
-        await using (DbContext)
+        try
         {
-            try
-            {
-                await DbContext.Folders.AddAsync(folder);
-                await DbContext.SaveChangesAsync();
-                return folder;
-            }
-            catch
-            {
-                throw new Exception("error to create folder");
-            }
+            await DbContext.Folders.AddAsync(folder);
+            await DbContext.SaveChangesAsync();
+            return folder;
         }
+        catch
+        {
+            throw new Exception("error to create folder");
+        }
+    }
+
+    public async Task<Folder> ImportFolder(Folder model)
+    {
+        model.Id = 0;
+        await AddFolderAsync(model);
+        foreach (var folder in model.Folders)
+        {
+            folder.ParentId = model.Id;
+            var obj = await ImportFolder(folder);
+        }
+
+        return model;
     }
 
     public async Task<Folder> ExportFolder(int? folderId = null)
@@ -54,8 +64,8 @@ public class FolderRepository : IFolderRepository
         try
         {
             var folder = await GetFolderByIdAsync(folderId, folderId == null ? true : false);
-            if(folder.Folders.Count>0)
-            await FillFolder(folder.Folders, 0);
+            if (folder.Folders.Count > 0)
+                await FillFolder(folder.Folders, 0);
             return folder;
         }
         catch (Exception e)

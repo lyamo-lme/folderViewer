@@ -1,12 +1,8 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using WebApplication1.Db.Repository;
 using WebApplication1.Models;
-using MediaTypeHeaderValue = System.Net.Http.Headers.MediaTypeHeaderValue;
 
 namespace WebApplication1.Controllers;
 
@@ -39,6 +35,34 @@ public class FolderController : Controller
         var folder = await FolderRepository.ExportFolder(folderId);
         string json = JsonSerializer.Serialize(folder);
         return File(Encoding.UTF8.GetBytes(json), "text/json", folder.Name);
-        
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Folder>> ImportFolder(ImportFolderModel d)
+    {
+        try
+        {
+            var result = new StringBuilder();
+            using (var reader = new StreamReader(d.file.OpenReadStream()))
+            {
+                while (reader.Peek() >= 0)
+                    result.AppendLine(await reader.ReadLineAsync());
+            }
+            var obj = result.ToString();
+            var folder = JsonSerializer.Deserialize<Folder>(obj);
+            folder.ParentId = d.parentId;
+            var model = await FolderRepository.ImportFolder(folder);
+            return await GetFolderView(d.parentId);
+        }
+        catch
+        {
+            throw new Exception("file was damaged");
+        }
+    }
+
+    public class ImportFolderModel
+    {
+        public IFormFile file { get; set; }
+        public int parentId { get; set; }
     }
 }
